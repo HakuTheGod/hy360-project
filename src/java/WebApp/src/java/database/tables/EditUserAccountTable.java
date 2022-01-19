@@ -38,22 +38,21 @@ public void addPrivateAccountFromJSON(String json){
 public void insertPrivateAccount(Private_account pa){
     try {
         Connection con = Database_Connection.getConnection();
-        Statement stmt = con.createStatement();
-        String insertQuery = "INSERT INTO Private_account"
-            +"(Private_id, Private_name, Credit_line, Debt, Credit_balance) VALUES"
-            +"("
-                + "'" + pa.getUserID() + "',"
-                + "'" + pa.getUserName() + "',"
-                + "'" + pa.getCredit_line() + "',"
-                + "'" + pa.getDebt() + "',"
-                + "'" + pa.getCredit_balance() + "'"
-                + ")";
-        
-        System.out.println(insertQuery);
-        stmt.executeUpdate(insertQuery);
-        System.out.println("# The private account was successfully inserted in the database.");
-        
-        stmt.close();
+        try (Statement stmt = con.createStatement()) {
+            String insertQuery = "INSERT INTO Private_account"
+                    +"(Private_id, Private_name, Credit_line, Debt, Credit_balance) VALUES"
+                    +"("
+                    + "'" + pa.getUserID() + "',"
+                    + "'" + pa.getUserName() + "',"
+                    + "'" + pa.getCredit_line() + "',"
+                    + "'" + pa.getDebt() + "',"
+                    + "'" + pa.getCredit_balance() + "'"
+                    + ")";
+            
+            System.out.println(insertQuery);
+            stmt.executeUpdate(insertQuery);
+            System.out.println("# The private account was successfully inserted in the database.");
+        }
         
     } catch (SQLException ex) {
         Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
@@ -61,6 +60,24 @@ public void insertPrivateAccount(Private_account pa){
         Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
     }
     
+}
+
+public Private_account databaseToPrivateAccount(int id) throws SQLException, ClassNotFoundException{
+    Connection con = Database_Connection.getConnection();
+    Statement stmt = con.createStatement();
+    ResultSet rs;
+    try{
+        rs = stmt.executeQuery("SELECT * FROM private_account WHERE user_id ='" + id + "'");
+        rs.next();
+        String json = Database_Connection.getResultsToJSON(rs);
+        Gson gson = new Gson();
+        Private_account pa = gson.fromJson(json, Private_account.class);
+        return pa;
+    }catch (Exception e) {
+        System.err.println("Got an exception! ");
+        System.err.println(e.getMessage());
+    }
+    return null; 
 }
 
 //NEW idiwths
