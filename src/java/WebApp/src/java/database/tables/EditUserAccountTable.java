@@ -1,5 +1,9 @@
 
 package database.tables;
+import database.Database_Connection;
+import java.sql.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 import mainClasses.Private_account;
 import mainClasses.Company_account;
 
@@ -18,22 +22,19 @@ private static final String INSERT_COMPANY_ACCOUNT = "INSERT INTO Company_accoun
             +"(?, ?, ?, ?, ?)";
 
 //NEW idiwths
-    public void insert_private_account(Private_account private_account){
-        /*try{
-            (Connection con = getConnection ();
-            PreparedStatement prepared_stat = con.PreparedStatement(INSERT_PRIVATE_ACCOUNT)
-            prepared_stat.setInt(1,private_account.getID());
-            prepared_stat.setString(2,private_account.getName());
-            prepared_stat.setInt(3,private_account.getCredit_line());
-            prepared_stat.setInt(4,private_account.getDebt());// 8a nai 0
-            prepared_stat.setINT(5,private_account.getCredit_balance());
+    public void insert_private_account(Private_account pa) throws SQLException, ClassNotFoundException{
+            Connection con = Database_Connection.getConnection();
+            ResultSet rs;
+            PreparedStatement prepared_stat;
+            prepared_stat = con.prepareStatement(INSERT_PRIVATE_ACCOUNT);
+            prepared_stat.setInt(1,pa.getUserID());
+            prepared_stat.setString(2,pa.getUserName());
+            prepared_stat.setDouble(3,pa.getCredit_line());
+            prepared_stat.setDouble(4,pa.getDebt());// 8a nai 0
+            prepared_stat.setDouble(5,pa.getCredit_balance());
             System.out.println(prepared_stat);
-            prepared_stat.executeUpdate();
+            rs = prepared_stat.executeQuery();
             //Credit_balance == credit_line sthn arxh afou den exei 3ode4ei tpt akoma
-
-        }catch(Exception e){
-                e.printStackTrace();
-        }*/
     }
 
     //NEW COMPANY
