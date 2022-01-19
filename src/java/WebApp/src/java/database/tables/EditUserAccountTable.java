@@ -32,6 +32,7 @@ public Private_account jsonToPrivateAccount(String json){
 
 public void addPrivateAccountFromJSON(String json){
     Private_account pa = jsonToPrivateAccount(json);
+    insertUser(pa);
     insertPrivateAccount(pa);
 }
 
@@ -52,6 +53,30 @@ public void insertPrivateAccount(Private_account pa){
             System.out.println(insertQuery);
             stmt.executeUpdate(insertQuery);
             System.out.println("# The private account was successfully inserted in the database.");
+        }
+        
+    } catch (SQLException ex) {
+        Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+    } catch (ClassNotFoundException ex) {
+        Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+}
+
+public void insertUser(Private_account pa){
+    try {
+        Connection con = Database_Connection.getConnection();
+        try (Statement stmt = con.createStatement()) {
+            String insertQuery = "INSERT INTO User"
+                    +"(Private_id, Private_name) VALUES"
+                    +"("
+                    + "'" + pa.getUserID() + "',"
+                    + "'" + pa.getUserName() + "',"
+                    + ")";
+            
+            System.out.println(insertQuery);
+            stmt.executeUpdate(insertQuery);
+            System.out.println("# The user was successfully inserted in the database.");
         }
         
     } catch (SQLException ex) {
