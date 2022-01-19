@@ -34,6 +34,7 @@ public class AccountServlet extends HttpServlet {
         JSON_Converter jc = new JSON_Converter();
         String s = jc.getJsonFromAjax(request.getReader());
         EditUserAccountTable euat = new EditUserAccountTable();
+        
         Private_account pa,temp;
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
