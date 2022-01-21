@@ -2,23 +2,23 @@
 package mainClasses;
 
 public class User{
-    private int id;
-    private String name;
+    private int user_id;
+    private String user_name;
 
 
     public void setUserID(int id){
-        this.id = id;
+        this.user_id = id;
     }
 
     public void setUserName(String name){
-        this.name = name;
+        this.user_name = name;
     }
 
     public String getUserName(){
-        return this.name;
+        return this.user_name;
     }
 
     public int getUserID(){
-       return this.id;
+       return this.user_id;
     }    
 }

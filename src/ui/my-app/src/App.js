@@ -14,7 +14,7 @@ function App() {
   return (
     <ChakraProvider theme = {theme}>
       <Router>
-        <Box textAllign='center' fontSize='xl'>
+        <Box fontSize='xl'>
           <VStack spacing={8}>
             <Routes>
               <Route path="/" element={<Main />}/>

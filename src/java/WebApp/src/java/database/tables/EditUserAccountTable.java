@@ -32,7 +32,7 @@ public class EditUserAccountTable{
             Connection con = Database_Connection.getConnection();
             try (Statement stmt = con.createStatement()) {
                 String insertQuery = "INSERT INTO Private_account"
-                    +"(Private_id, Private_name, Credit_line, Debt, Credit_balance) VALUES"
+                    +"(user_id, username, Credit_line, Debt, Credit_balance) VALUES"
                     +"("
                     + "'" + pa.getUserID() + "',"
                     + "'" + pa.getUserName() + "',"
@@ -58,7 +58,7 @@ public class EditUserAccountTable{
             Connection con = Database_Connection.getConnection();
             try (Statement stmt = con.createStatement()) {
                 String insertQuery = "INSERT INTO User"
-                    +"(Private_id, Private_name) VALUES"
+                    +"(user_id, username) VALUES"
                     +"("
                     + "'" + pa.getUserID() + "',"
                     + "'" + pa.getUserName() + "',"
