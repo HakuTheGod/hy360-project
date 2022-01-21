@@ -70,7 +70,7 @@ const Main = () => {
     return(
         <form method='POST' onSubmit={handleSubmit} noValidate>
             <Stack maxWidth={1000} margin='auto' spacing={7} margin-top={5}>
-                <Text fontSize='5xl' >Register</Text>
+                <Text fontSize='5xl' >Register Private</Text>
                 <FormControl isRequired id='user_id'>
                     <FormLabel>user_id</FormLabel>
                     <NumberInput
