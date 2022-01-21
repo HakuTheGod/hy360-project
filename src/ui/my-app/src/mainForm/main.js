@@ -141,7 +141,6 @@ const Main = () => {
 
                 <Button
                     mt={2}
-                    colorScheme="grey"
                     type="submit"
                  >
                 Submit
