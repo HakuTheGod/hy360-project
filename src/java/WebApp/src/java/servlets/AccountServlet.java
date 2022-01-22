@@ -6,6 +6,8 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import database.tables.EditCompanyAccountTable;
+import database.tables.EditSupplierTable;
 import database.tables.EditUserAccountTable;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,14 +19,16 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mainClasses.Company_account;
 import mainClasses.JSON_Converter;
 import mainClasses.Private_account;
+import mainClasses.Supplier_account;
 
 /**
  *
  * @author admin
  */
-@WebServlet(name = "AccountServlet", urlPatterns = {"/InsertPrivateAccount"})
+@WebServlet(name = "AccountServlet", urlPatterns = {"/InsertPrivateAccount", "/DeletePrivateAccount", "/InsertCompanyAccount", "/InsertSupplierAccount"})
 public class AccountServlet extends HttpServlet {
     
     
@@ -63,8 +67,72 @@ public class AccountServlet extends HttpServlet {
     }
     
     
+    private void insertCompanyAccount(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+        JSON_Converter jc = new JSON_Converter();
+        String s = jc.getJsonFromAjax(request.getReader());
+        EditCompanyAccountTable ecat = new EditCompanyAccountTable();
+        
+        Company_account ca,temp;
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try{
+            ecat.addCompanyAccountFromJSON(s);
+            temp = ecat.jsonToCompanyAccount(s);
+            ca = ecat.databaseToCompanyAccount(temp.getUserID());
+            Gson gson = new Gson();
+            JsonObject jo = new JsonObject();
+            if(ca != null){
+                jo.addProperty("Result", "Success!");
+                response.setStatus(200);
+                response.getWriter().write(jo.toString());
+            }
+            else{
+                jo.addProperty("Result", "Failed!");
+                response.setStatus(404);
+                response.getWriter().write(jo.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    }
     
     
+    private void insertSupplierAccount(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+        JSON_Converter jc = new JSON_Converter();
+        String s = jc.getJsonFromAjax(request.getReader());
+        EditSupplierTable est = new EditSupplierTable();
+        
+        Supplier_account ca,temp;
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try{
+            est.addSupplierAccountFromJSON(s);
+            temp = est.jsonToSupplierAccount(s);
+            ca = est.databaseToSupplierAccount(temp.getUserID());
+            Gson gson = new Gson();
+            JsonObject jo = new JsonObject();
+            if(ca != null){
+                jo.addProperty("Result", "Success!");
+                response.setStatus(200);
+                response.getWriter().write(jo.toString());
+            }
+            else{
+                jo.addProperty("Result", "Failed!");
+                response.setStatus(404);
+                response.getWriter().write(jo.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    }
     
     
 
@@ -106,7 +174,7 @@ public class AccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
     }
 
     /**
@@ -126,6 +194,12 @@ public class AccountServlet extends HttpServlet {
         switch(action){
             case "/InsertPrivateAccount":
                 insertPrivateAccount(request, response);
+                break;
+            case "/InsertCompanyAccount":
+                insertCompanyAccount(request, response);
+                break;
+            case "/InsertSupplierAccount":
+                insertSupplierAccount(request, response);
                 break;
             default:
                 System.out.println("Something Went WRONG. IN DEFAULT.");

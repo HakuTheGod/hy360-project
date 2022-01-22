@@ -23,27 +23,27 @@ public class Company_account extends User{
         this.debt=0; 
     }*/
 
-    float getCredit_balance(){
+    public float getCredit_balance(){
         return this.Credit_balance;
     }
 
-    float getCredit_line(){
+    public float getCredit_line(){
         return this.Credit_line;    
     }
 
-    float getDebt(){
+    public float getDebt(){
         return this.Debt;
 
     }
 
-    void setDebt(float debt){
+    public void setDebt(float debt){
         this.Debt = debt;
     }
 
-    void setCredit_Line(float credit_line){
+    public void setCredit_Line(float credit_line){
         this.Credit_line=Credit_line;
     }
-    void setCredit_balance(float Credit_balance){
+    public void setCredit_balance(float Credit_balance){
         this.Credit_balance = Credit_balance;
     }
 }

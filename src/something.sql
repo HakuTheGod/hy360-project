@@ -4,6 +4,14 @@ CREATE TABLE IF NOT EXISTS User(
     PRIMARY KEY(user_id,user_name)
 );
 
+CREATE TABLE IF NOT EXISTS Transactions(
+	t_id int NOT NULL,
+	seller_name varchar(64) NOT NULL,
+	t_date varchar(64) NOT NULL,
+	amount double NOT NULL,
+	t_type varchar(64) NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS Private_account (
     user_id int NOT NULL,
     user_name varchar(64) NOT NULL,
@@ -38,6 +46,45 @@ CREATE TABLE IF NOT EXISTS Supplier_account(
 	
 	PRIMARY KEY (user_id,user_name),
 	FOREIGN KEY (user_id,user_name) REFERENCES User(user_id,user_name)
+	
+)ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS Employees(
+	employee_id int NOT NULL,
+	employee_name varchar(64) NOT NULL,
+    company_id int NOT NULL,
+    company_name varchar(64) NOT NULL,
+	
+	PRIMARY KEY (employee_id),
+	FOREIGN KEY (company_id,company_name) REFERENCES Company_account(user_id,user_name)
+	
+)ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS Transactions_private(
+	t_id int NOT NULL,
+	p_seller varchar(64) NOT NULL,
+    p_customer varchar(64) NOT NULL,
+	t_date varchar(64) NOT NULL,
+	amount double NOT NULL,
+	t_type varchar(64) NOT NULL,
+	
+	PRIMARY KEY (t_id, seller_name),
+	FOREIGN KEY (p_customer) REFERENCES Private_account(user_name),
+	FOREIGN KEY (p_seller) REFERENCES Supplier_account(user_name)
+	
+)ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS Transactions_employees(
+    t_id int NOT NULL,
+    e_seller varchar(64) NOT NULL,
+	e_customer varchar(64) NOT NULL,
+	t_date varchar(64) NOT NULL,
+	amount double NOT NULL,
+	t_type varchar(64) NOT NULL,
+	
+	PRIMARY KEY (t_id, seller_name),
+	FOREIGN KEY (e_customer) REFERENCES Employees(employee_name),
+	FOREIGN KEY (e_seller) REFERENCES Supplier_account(user_name)
 	
 )ENGINE = InnoDB;
 

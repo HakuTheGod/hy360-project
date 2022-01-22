@@ -10,10 +10,40 @@ package mainClasses;
  * @author admin
  */
 public class Supplier_account extends User{
-    private float Percentage_to_CCC;
-    private float Profit;
-    private float Debt;
-    private String[] products;
+    private double Percent_toCCC;
+    private double Profit;
+    private double Debt;
+    private String Products;
 
-   //TODO gets...
+   public void setProducts(String product){
+       this.Products = product;
+   }
+   
+   public void setProfit(double Profit){
+       this.Profit = Profit;
+   }
+   
+   public void setDebt(double Debt){
+       this.Debt = Debt;
+   }
+   public void setPercent_toCCC(double percent_toCCC){
+       this.Percent_toCCC = percent_toCCC;
+   }
+   
+   
+   public String getProducts(){
+       return this.Products;
+   }
+   
+   public double getProfit(){
+       return this.Profit;
+   }
+   
+   public double getDebt(){
+       return this.Debt;
+   }
+   
+   public double getPercent_toCCC(){
+       return this.Percent_toCCC;
+   }
 }
