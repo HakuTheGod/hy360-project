@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS User(
     user_id int NOT NULL,
     user_name varchar(64) NOT NULL,
-    PRIMARY KEY(user_id,user_name)
-);
+    PRIMARY KEY(user_id, user_name)
+)ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS Private_account (
     user_id int NOT NULL,
@@ -53,18 +53,19 @@ CREATE TABLE IF NOT EXISTS Employees(
 )ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS Transactions(
+	t_date varchar(64) NOT NULL,
 	seller_name varchar(64) NOT NULL,
 	customer_name varchar(64) NOT NULL,
-	t_date varchar(64) NOT NULL,
 	t_id int NOT NULL,
 	amount double NOT NULL,
 	t_type varchar(64) NOT NULL,
 	
 	PRIMARY KEY (seller_name,customer_name,t_date),
-	FOREIGN KEY (seller_name) REFERENCES User(user_name),
-	FOREIGN KEY (customer_name) REFERENCES User(user_name)
+	FOREIGN KEY (seller_name) REFERENCES Supplier_account(user_name),
+	FOREIGN KEY (customer_name) REFERENCES Private_account(user_name)
 	
-);
+)ENGINE = InnoDB;
+
 
 CREATE TABLE IF NOT EXISTS private_purchases(
 	p_account_name varchar(64) NOT NULL,
@@ -90,7 +91,7 @@ CREATE TABLE IF NOT EXISTS company_purchases(
 	FOREIGN KEY (p_account_name, seller_name) REFERENCES User(user_name),
 	FOREIGN KEY (employee_id) REFERENCES Employees(employee_id)
 	
-)ENGINE = InnoDB;
+)ENGINE = InnoDBi;
 
 INSERT INTO User VALUES(
 	"0",

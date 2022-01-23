@@ -47,8 +47,8 @@ const Main = () => {
     })
 
  
-    let type = '';
-    const [final, setFinal] = useState('');
+    let type = 'Private';
+    const [final, setFinal] = useState('Private');
 
     const handleState = e => {
         console.log(e.target.value);
@@ -91,10 +91,10 @@ const Main = () => {
         var urlEnd;
         var json_vals;
 
-        console.log(type);
+        console.log(final);
 
         if(final === 'Supplier'){
-            console.log(type);
+            console.log(final);
              json_vals = JSON.stringify(Svalues);
             console.log("JSON  " + json_vals);
             urlEnd = 'http://localhost:8080/WebApp/InsertSupplierAccount';
