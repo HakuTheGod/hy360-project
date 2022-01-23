@@ -43,6 +43,7 @@ const Header = () => {
               </MenuButton>
               <MenuList minWidth='240px'>
               <Link to="/main"><MenuItem>Register new account</MenuItem></Link>
+              <Link to="/delete"><MenuItem>Terminate Account</MenuItem></Link>
               <MenuDivider />
                 
               </MenuList>

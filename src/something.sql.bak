@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Private_account (
     Debt float NOT NULL,              
 	Credit_balance float NOT NULL,    
     PRIMARY KEY (user_id,user_name),
-	FOREIGN KEY (user_id,user_name) REFERENCES User(user_id,user_name)
+	FOREIGN KEY (user_id,user_name) REFERENCES User(user_id,user_name) ON DELETE CASCADE
 	
 )ENGINE = InnoDB;
 
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Company_account(
     Credit_balance float NOT NULL,   
 
     PRIMARY KEY (user_id,user_name),
-	FOREIGN KEY (user_id,user_name) REFERENCES User(user_id,user_name)
+	FOREIGN KEY (user_id,user_name) REFERENCES User(user_id,user_name) ON DELETE CASCADE
 )ENGINE = InnoDB;
 
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS Supplier_account(
     Debt       float NOT NULL,
 	
 	PRIMARY KEY (user_id,user_name),
-	FOREIGN KEY (user_id,user_name) REFERENCES User(user_id,user_name)
+	FOREIGN KEY (user_id,user_name) REFERENCES User(user_id,user_name) ON DELETE CASCADE
 	
 )ENGINE = InnoDB;
 
@@ -60,9 +60,7 @@ CREATE TABLE IF NOT EXISTS Transactions(
 	amount double NOT NULL,
 	t_type varchar(64) NOT NULL,
 	
-	PRIMARY KEY (seller_name,customer_name,t_date),
-	CONSTRAINT fk_user_transaction FOREIGN KEY (seller_name) REFERENCES Supplier_account(user_name),
-	CONSTRAINT fk_user_transaction_1 FOREIGN KEY (customer_name) REFERENCES Private_account(user_name)
+	PRIMARY KEY (seller_name,customer_name,t_date)
 	
 )ENGINE = InnoDB;
 
@@ -74,8 +72,7 @@ CREATE TABLE IF NOT EXISTS private_purchases(
 	quantity int NOT NULL,
 	total_price double NOT NULL,
 	
-	PRIMARY KEY (p_account_name, seller_name, product),
-	FOREIGN KEY (p_account_name, seller_name) REFERENCES User(user_name),
+	PRIMARY KEY (p_account_name, seller_name, product)
 	
 )ENGINE = InnoDB;
 
@@ -87,9 +84,7 @@ CREATE TABLE IF NOT EXISTS company_purchases(
 	quantity int NOT NULL,
 	total_price double NOT NULL,
 	
-	PRIMARY KEY (p_account_name, seller_name, product, employee_id),
-	FOREIGN KEY (p_account_name, seller_name) REFERENCES User(user_name),
-	FOREIGN KEY (employee_id) REFERENCES Employees(employee_id)
+	PRIMARY KEY (p_account_name, seller_name, product, employee_id)
 	
 )ENGINE = InnoDBi;
 

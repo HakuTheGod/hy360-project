@@ -28,7 +28,7 @@ import mainClasses.Supplier_account;
  *
  * @author admin
  */
-@WebServlet(name = "AccountServlet", urlPatterns = {"/InsertPrivateAccount", "/DeletePrivateAccount", "/InsertCompanyAccount", "/InsertSupplierAccount"})
+@WebServlet(name = "AccountServlet", urlPatterns = {"/InsertPrivateAccount", "/DeletePrivateAccount", "/DeleteCompanyAccount" ,"/DeleteSupplierAccount", "/InsertCompanyAccount", "/InsertSupplierAccount"})
 public class AccountServlet extends HttpServlet {
     
     
@@ -134,6 +134,134 @@ public class AccountServlet extends HttpServlet {
     
     }
     
+    private void deletePrivateAccount(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+        JSON_Converter jc = new JSON_Converter();
+        String s = jc.getJsonFromAjax(request.getReader());
+        Private_account a, p,temp;
+        EditUserAccountTable euat = new EditUserAccountTable();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
+        try {
+            System.out.println(s);
+            a = euat.jsonToPrivateAccount(s);
+            System.out.println(a.getUserName());
+            p = euat.databaseToPrivateAccountU(a.getUserName());
+             Gson gson = new Gson();
+            JsonObject jo = new JsonObject();
+            
+            if(p != null){
+                if(p.getDebt() == 0.0){
+                    euat.deleteFromDatabase(p.getUserName());
+                    temp = euat.databaseToPrivateAccountU(p.getUserName());
+                    if(temp == null){
+                        response.setStatus(200);
+                        jo.addProperty("success", "SUCCESSS");
+                        response.getWriter().write(jo.toString());
+                    }
+                    else{
+                        response.setStatus(404);
+                        jo.addProperty("fail", "FAIL");
+                        response.getWriter().write(jo.toString());
+                    }
+                }
+                else{
+                    response.setStatus(403);
+                    jo.addProperty("fail", "FAIL");
+                    response.getWriter().write(jo.toString());
+                }
+            }
+            else{
+                response.setStatus(404);
+                jo.addProperty("fail", "FAIL");
+                response.getWriter().write(jo.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+        
+    
+    }
+    
+    private void deleteCompanyAccount(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+        JSON_Converter jc = new JSON_Converter();
+        String s = jc.getJsonFromAjax(request.getReader());
+        Company_account c,temp;
+        EditCompanyAccountTable ecat = new EditCompanyAccountTable();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
+        try {
+            c = ecat.databaseToCompanyAccountU(s);
+            if(c != null){
+                if(c.getDebt() == 0.0){
+                    ecat.deleteFromDatabase(c.getUserName());
+                    temp = ecat.databaseToCompanyAccountU(c.getUserName());
+                    if(temp == null){
+                        response.setStatus(200);
+                    }
+                    else{
+                        response.setStatus(404);
+                    }
+                }
+                else{
+                    response.setStatus(403);
+                }
+            }
+            else{
+                response.setStatus(404);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    }
+    
+    private void deleteSupplierAccount(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+        JSON_Converter jc = new JSON_Converter();
+        String s = jc.getJsonFromAjax(request.getReader());
+        Supplier_account c,temp;
+        EditSupplierTable est = new EditSupplierTable();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
+        try {
+            c = est.databaseToSupplierAccountU(s);
+            if(c != null){
+                if(c.getDebt() == 0.0){
+                    est.deleteFromDatabase(c.getUserName());
+                    temp = est.databaseToSupplierAccountU(c.getUserName());
+                    if(temp == null){
+                        response.setStatus(200);
+                    }
+                    else{
+                        response.setStatus(404);
+                    }
+                }
+                else{
+                    response.setStatus(403);
+                }
+            }
+            else{
+                response.setStatus(404);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    }
+    
     
 
     /**
@@ -200,6 +328,15 @@ public class AccountServlet extends HttpServlet {
                 break;
             case "/InsertSupplierAccount":
                 insertSupplierAccount(request, response);
+                break;
+            case "/DeletePrivateAccount":
+                deletePrivateAccount(request, response);
+                break;
+            case "/DeleteCompanyAccount":
+                deleteCompanyAccount(request, response);
+                break;
+            case "/DeleteSupplierAccount":
+                deleteSupplierAccount(request, response);
                 break;
             default:
                 System.out.println("Something Went WRONG. IN DEFAULT.");

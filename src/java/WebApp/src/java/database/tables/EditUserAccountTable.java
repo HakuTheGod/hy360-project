@@ -93,4 +93,44 @@ public class EditUserAccountTable{
         }
         return null; 
     }
+    
+    public Private_account databaseToPrivateAccountU(String username) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        System.out.println(username);
+        String s = "'" + username + "'";
+        try{
+            rs = stmt.executeQuery("SELECT * FROM private_account WHERE user_name =" + s);
+            rs.next();
+            String json = Database_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Private_account pa = gson.fromJson(json, Private_account.class);
+            System.out.println(pa.getUserName());
+            return pa;
+        }catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null; 
+    }
+    
+    public void deleteFromDatabase(String username) throws SQLException, ClassNotFoundException{
+        deleteUserAccountP(username);
+        deletePrivateAccount(username);
+    }
+    
+    public void deletePrivateAccount(String username) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        String deleteQuery = "DELETE FROM private_account WHERE user_name='" + username + "'";
+        stmt.executeUpdate(deleteQuery);
+    }
+    
+    public void deleteUserAccountP(String username) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        String deleteQuery = "DELETE FROM user WHERE user_name='" + username + "'";
+        stmt.executeUpdate(deleteQuery);
+    }
 }

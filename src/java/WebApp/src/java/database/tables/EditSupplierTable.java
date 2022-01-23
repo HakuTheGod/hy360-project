@@ -100,4 +100,41 @@ public class EditSupplierTable {
         }
         return null; 
     }
+    
+    public Supplier_account databaseToSupplierAccountU(String username) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try{
+            rs = stmt.executeQuery("SELECT * FROM supplier_account WHERE user_name ='" + username + "'");
+            rs.next();
+            String json = Database_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Supplier_account sa = gson.fromJson(json, Supplier_account.class);
+            return sa;
+        }catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null; 
+    }
+    
+    public void deleteFromDatabase(String username) throws SQLException, ClassNotFoundException{
+        deleteUserAccountS(username);
+        deleteSupplierAccount(username);
+    }
+    
+    public void deleteSupplierAccount(String username) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        String deleteQuery = "DELETE FROM supplier_account WHERE user_name='" + username + "'";
+        stmt.executeUpdate(deleteQuery);
+    }
+    
+    public void deleteUserAccountS(String username) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        String deleteQuery = "DELETE FROM user WHERE user_name='" + username + "'";
+        stmt.executeUpdate(deleteQuery);
+    }
 }
