@@ -44,6 +44,7 @@ const Header = () => {
               <MenuList minWidth='240px'>
               <Link to="/main"><MenuItem>Register new account</MenuItem></Link>
               <Link to="/delete"><MenuItem>Terminate Account</MenuItem></Link>
+              <Link to="/transaction"><MenuItem>Make a Transaction</MenuItem></Link>
               <MenuDivider />
                 
               </MenuList>

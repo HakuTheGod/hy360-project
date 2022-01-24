@@ -28,7 +28,7 @@ import mainClasses.Supplier_account;
  *
  * @author admin
  */
-@WebServlet(name = "AccountServlet", urlPatterns = {"/InsertPrivateAccount", "/DeletePrivateAccount", "/DeleteCompanyAccount" ,"/DeleteSupplierAccount", "/InsertCompanyAccount", "/InsertSupplierAccount"})
+@WebServlet(name = "AccountServlet", urlPatterns = {"/InsertPrivateAccount", "/DeletePrivateAccount", "/DeleteCompanyAccount" ,"/DeleteSupplierAccount", "/InsertCompanyAccount", "/InsertSupplierAccount", "/PurchasePrivate", "/PurchaseCompany"})
 public class AccountServlet extends HttpServlet {
     
     
@@ -192,30 +192,41 @@ public class AccountServlet extends HttpServlet {
         
         JSON_Converter jc = new JSON_Converter();
         String s = jc.getJsonFromAjax(request.getReader());
-        Company_account c,temp;
+        Company_account a,c,temp;
         EditCompanyAccountTable ecat = new EditCompanyAccountTable();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        Gson gson = new Gson();
+        JsonObject jo = new JsonObject();
         
         try {
-            c = ecat.databaseToCompanyAccountU(s);
+            a = ecat.jsonToCompanyAccount(s);
+            c = ecat.databaseToCompanyAccountU(a.getUserName());
             if(c != null){
                 if(c.getDebt() == 0.0){
                     ecat.deleteFromDatabase(c.getUserName());
                     temp = ecat.databaseToCompanyAccountU(c.getUserName());
                     if(temp == null){
                         response.setStatus(200);
+                        jo.addProperty("success", "SUCCESSS");
+                        response.getWriter().write(jo.toString());
                     }
                     else{
                         response.setStatus(404);
+                        jo.addProperty("fail", "FAIL");
+                        response.getWriter().write(jo.toString());
                     }
                 }
                 else{
                     response.setStatus(403);
+                    jo.addProperty("fail", "FAIL");
+                    response.getWriter().write(jo.toString());
                 }
             }
             else{
                 response.setStatus(404);
+                jo.addProperty("fail", "FAIL");
+                response.getWriter().write(jo.toString());
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
@@ -229,30 +240,41 @@ public class AccountServlet extends HttpServlet {
         
         JSON_Converter jc = new JSON_Converter();
         String s = jc.getJsonFromAjax(request.getReader());
-        Supplier_account c,temp;
+        Supplier_account a,c,temp;
         EditSupplierTable est = new EditSupplierTable();
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
+        Gson gson = new Gson();
+        JsonObject jo = new JsonObject();
         
         try {
-            c = est.databaseToSupplierAccountU(s);
+            a = est.jsonToSupplierAccount(s);
+            c = est.databaseToSupplierAccountU(a.getUserName());
             if(c != null){
                 if(c.getDebt() == 0.0){
                     est.deleteFromDatabase(c.getUserName());
                     temp = est.databaseToSupplierAccountU(c.getUserName());
                     if(temp == null){
                         response.setStatus(200);
+                        jo.addProperty("success", "SUCCESSS");
+                        response.getWriter().write(jo.toString());
                     }
                     else{
                         response.setStatus(404);
+                        jo.addProperty("fail", "FAIL");
+                        response.getWriter().write(jo.toString());
                     }
                 }
                 else{
                     response.setStatus(403);
+                    jo.addProperty("fail", "FAIL");
+                    response.getWriter().write(jo.toString());
                 }
             }
             else{
                 response.setStatus(404);
+                jo.addProperty("fail", "FAIL");
+                response.getWriter().write(jo.toString());
             }
         } catch (SQLException ex) {
             Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);

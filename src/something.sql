@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS Employees(
 )ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS Transactions(
-	t_date varchar(64) NOT NULL,
+	t_date DATETIME NOT NULL,
 	seller_name varchar(64) NOT NULL,
 	customer_name varchar(64) NOT NULL,
 	t_id int NOT NULL,
@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS company_purchases(
 	employee_id int NOT NULL,
 	quantity int NOT NULL,
 	total_price double NOT NULL,
+	c_date DATETIME NOT NULL,
 	
 	PRIMARY KEY (c_account_name, seller_name, product, employee_id)
 	

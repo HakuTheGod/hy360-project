@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS company_purchases(
 	quantity int NOT NULL,
 	total_price double NOT NULL,
 	
-	PRIMARY KEY (p_account_name, seller_name, product, employee_id)
+	PRIMARY KEY (c_account_name, seller_name, product, employee_id)
 	
 )ENGINE = InnoDBi;
 
