@@ -14,6 +14,7 @@ public class Company_account extends User{
     private float Debt;
     private float Credit_line;
     private float Credit_balance;
+    private double amount_to_pay;
 
     /*public Company_account(int id, String name,float Credit_line){
         this.id = id;
@@ -35,9 +36,17 @@ public class Company_account extends User{
         return this.Debt;
 
     }
+    
+    public double getAmountToPay(){
+        return this.amount_to_pay;
+    }
 
     public void setDebt(float debt){
         this.Debt = debt;
+    }
+    
+    public void setAmountToPay(double amount){
+        this.amount_to_pay = amount;
     }
 
     public void setCredit_Line(float credit_line){

@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mainClasses.Company_account;
+import mainClasses.Private_account;
 
 /**
  *
@@ -118,6 +119,24 @@ public class EditCompanyAccountTable {
         }
         return null; 
     }
+     
+     public Company_account databaseToCompanyAccountD(double debt) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try{
+            rs = stmt.executeQuery("SELECT * FROM company_account WHERE Debt ='" + debt + "'");
+            rs.next();
+            String json = Database_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Company_account ca = gson.fromJson(json, Company_account.class);
+            return ca;
+        }catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null; 
+    }
     
     public void deleteFromDatabase(String username) throws SQLException, ClassNotFoundException{
         deleteUserAccountC(username);
@@ -136,5 +155,41 @@ public class EditCompanyAccountTable {
         Statement stmt = con.createStatement();
         String deleteQuery = "DELETE FROM user WHERE user_name='" + username + "'";
         stmt.executeUpdate(deleteQuery);
+    }
+    
+    public void updateBalance(double credit_balance, double debt, int id){
+        try {
+            Connection con = Database_Connection.getConnection();
+            try (Statement stmt = con.createStatement()) {
+                String insertQuery = "UPDATE company_account SET Credit_balance='" + credit_balance + "', Debt='" + debt + "' WHERE user_id='" + id + "'";
+            
+                System.out.println(insertQuery);
+                stmt.executeUpdate(insertQuery);
+                System.out.println("# The company account was successfully updated.");
+            }
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void payDebt(double debt, int id){
+        try {
+            Connection con = Database_Connection.getConnection();
+            try (Statement stmt = con.createStatement()) {
+                String insertQuery = "UPDATE company_account SET Debt='" + debt + "' WHERE user_id='" + id + "'";
+            
+                System.out.println(insertQuery);
+                stmt.executeUpdate(insertQuery);
+                System.out.println("# The company account was successfully updated.");
+            }
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

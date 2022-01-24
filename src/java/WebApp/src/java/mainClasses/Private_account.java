@@ -15,6 +15,7 @@ public class Private_account extends User{
     private double Debt;
     private double Credit_line;
     private double Credit_balance;
+    private double amount_to_pay;
 
 
     public double getCredit_balance(){
@@ -29,15 +30,23 @@ public class Private_account extends User{
         return this.Debt;
 
     }
+    
+    public double getAmountToPay(){
+        return this.amount_to_pay;
+    }
 
-    public void setDebt(float debt){
+    public void setDebt(double debt){
         this.Debt = debt;
     }
-
-    public void setCredit_Line(float credit_line){
-        this.Credit_line=Credit_line;
+    
+    public void setAmountToPay(double amount){
+        this.amount_to_pay = amount;
     }
-    public void setCredit_balance(float Credit_balance){
+
+    public void setCredit_Line(double credit_line){
+        this.Credit_line=credit_line;
+    }
+    public void setCredit_balance(double Credit_balance){
         this.Credit_balance = Credit_balance;
     }
 }

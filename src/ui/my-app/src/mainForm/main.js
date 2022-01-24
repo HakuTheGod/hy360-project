@@ -43,7 +43,8 @@ const Main = () => {
         Products: '',
         Profit: 0.0,
         Percent_toCCC: 0.0,
-        Debt: 0.0
+        Debt: 0.0,
+        Product_price: 0.0
     })
 
  
@@ -230,6 +231,21 @@ const Main = () => {
                     >
                         <NumberInputField
                         name='Debt'
+                        onChange={handleChangeS}
+                        placeholder='0.0'
+                        />
+                        <FormErrorMessage> error </FormErrorMessage>
+                    </NumberInput>
+                </FormControl>
+
+                <FormControl isRequired id='Product_price'>
+                    <FormLabel>Product Price</FormLabel>
+                    <NumberInput
+                        colorScheme='Purple'
+                        clampValueOnBlur={false}
+                    >
+                        <NumberInputField
+                        name='Product_price'
                         onChange={handleChangeS}
                         placeholder='0.0'
                         />

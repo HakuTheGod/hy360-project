@@ -12,6 +12,7 @@ import Dashboard from './Dashboard';
 import Header from './Header';
 import DeleteRows from './delete/DeleteRows';
 import Transaction from './transaction/Transaction';
+import Pay from './pay/Pay';
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
               <Route path="/main" element={<Main />}/>
               <Route path="/delete" element={<DeleteRows />}/>
               <Route path="/transaction" element={<Transaction />}/>
+              <Route path="/pay" element={<Pay />}/>
             </Routes>
           </VStack>
         </Box>

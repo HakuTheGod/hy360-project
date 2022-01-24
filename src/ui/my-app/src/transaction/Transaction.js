@@ -28,6 +28,9 @@ const Transaction = () => {
 
     const [show, toggleShow] = React.useState(true);
 
+    const [responseMessage, setResponseMessage] = useState('');
+    const [color, setColor] = useState('');
+
     const [values, setValues] = useState({
         p_account_name: '',
         seller_name: '',
@@ -40,7 +43,7 @@ const Transaction = () => {
         c_account_name: 0,
         seller_name: '',
         product: '',
-        Employee_id: 0,
+        employee_id: 0,
         quantity: 0,
         total_price: 0.0
     })
@@ -94,7 +97,7 @@ const Transaction = () => {
 
         if(final === 'Private'){
             console.log(final);
-             json_vals = JSON.stringify(Svalues);
+             json_vals = JSON.stringify(values);
             console.log("JSON  " + json_vals);
             urlEnd = 'http://localhost:8080/WebApp/PurchasePrivate';
 
@@ -104,17 +107,22 @@ const Transaction = () => {
                 contentType: "application/json",
                 data: json_vals,
                 success: function (result) {
-                    console.log("SUCCESS")
+                    console.log("SUCCESS");
+                    var response = JSON.parse(result.responseText);
+                    setResponseMessage(response.success);
+                    setColor('green');
                   },
                   error: function (result) {
-                    console.log("FAIL")
-                    
+                    console.log("FAIL");
+                    var response = JSON.parse(result.responseText);
+                    setResponseMessage(response.fail);
+                    setColor('red');
                   }
         
             })
         }
         else{
-            json_vals = JSON.stringify(values);
+            json_vals = JSON.stringify(Svalues);
             console.log("JSON  " + json_vals);
 
           
@@ -198,21 +206,6 @@ const Transaction = () => {
                         <FormErrorMessage> error </FormErrorMessage>
                     </NumberInput>
                 </FormControl>
-
-                <FormControl isRequired id='total_price'>
-                        <FormLabel>Total price</FormLabel>
-                        <NumberInput
-                            colorScheme='Purple'
-                            clampValueOnBlur={false}
-                        >
-                            <NumberInputField
-                            name='total_price'
-                            onChange={handleChange}
-                            placeholder='0'
-                            />
-                            <FormErrorMessage> error </FormErrorMessage>
-                        </NumberInput>
-                    </FormControl>
                 </div>
                 }
                {    !show &&
@@ -281,21 +274,6 @@ const Transaction = () => {
                         <FormErrorMessage> error </FormErrorMessage>
                     </NumberInput>
                 </FormControl>
-
-                <FormControl isRequired id='total_price'>
-                        <FormLabel>Total price</FormLabel>
-                        <NumberInput
-                            colorScheme='Purple'
-                            clampValueOnBlur={false}
-                        >
-                            <NumberInputField
-                            name='total_price'
-                            onChange={handleChangeS}
-                            placeholder='0'
-                            />
-                            <FormErrorMessage> error </FormErrorMessage>
-                        </NumberInput>
-                    </FormControl>
                 
                     </div>
                 }
@@ -315,9 +293,9 @@ const Transaction = () => {
                  >
                 Submit
                 </Button>
-                
             </Stack>
         </form>
+        <h2 style={{color: color}}>{responseMessage}</h2>
         </>
     )
 

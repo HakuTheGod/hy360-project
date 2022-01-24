@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS Supplier_account(
     Profit       float NOT NULL,
     Percent_toCCC float NOT NULL, 
     Debt       float NOT NULL,
+	Product_price double NOT NULL,
 	
 	PRIMARY KEY (user_id,user_name),
 	FOREIGN KEY (user_id,user_name) REFERENCES User(user_id,user_name) ON DELETE CASCADE
@@ -200,7 +201,8 @@ INSERT INTO Supplier_account VALUES(
 	"Wood",
 	"45000",
 	"0.09",
-	"10000"
+	"10000",
+	"5"
 );
 
 INSERT INTO User VALUES(
@@ -215,7 +217,8 @@ INSERT INTO Supplier_account VALUES(
 	"bathwater",
 	"100000",
 	"0.05",
-	"6900"
+	"6900",
+	"30"
 );
 
 INSERT INTO User VALUES(
@@ -230,7 +233,8 @@ INSERT INTO Supplier_account VALUES(
 	"erotic_mangas",
 	"1000000",
 	"0.02",
-	"0"
+	"0",
+	"6.9"
 );
 
 INSERT INTO User VALUES(
@@ -245,6 +249,7 @@ INSERT INTO Supplier_account VALUES(
 	"celebrities_butt_hair",
 	"333333",
 	"0.1",
-	"0"
+	"0",
+	"3"
 );
 

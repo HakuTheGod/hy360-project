@@ -10,6 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mainClasses.Company_account;
 import mainClasses.Supplier_account;
 
 /**
@@ -38,14 +39,15 @@ public class EditSupplierTable {
             Connection con = Database_Connection.getConnection();
             try (Statement stmt = con.createStatement()) {
                 String insertQuery = "INSERT INTO supplier_account"
-                    +"(user_id, user_name, Products, Profit, Percent_toCCC, Debt) VALUES"
+                    +"(user_id, user_name, Products, Profit, Percent_toCCC, Debt, Product_price) VALUES"
                     +"("
                     + "'" + sa.getUserID() + "',"
                     + "'" + sa.getUserName() + "',"
                     + "'" + sa.getProducts() + "',"
                     + "'" + sa.getProfit() + "',"
                     + "'" + sa.getPercent_toCCC()+ "',"
-                    + "'" + sa.getDebt() + "'"
+                    + "'" + sa.getDebt() + "',"
+                    + "'" + sa.getProduct_price() + "'"
                     + ")";
             
                 System.out.println(insertQuery);
@@ -119,6 +121,42 @@ public class EditSupplierTable {
         return null; 
     }
     
+    public Supplier_account databaseToSupplierAccountP(String name, String product) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try{
+            rs = stmt.executeQuery("SELECT * FROM supplier_account WHERE user_name ='" + name + "' AND products='" + product + "'");
+            rs.next();
+            String json = Database_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Supplier_account sa = gson.fromJson(json, Supplier_account.class);
+            return sa;
+        }catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null; 
+    }
+    
+    public Supplier_account databaseToSupplierAccountD(double debt) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ResultSet rs;
+        try{
+            rs = stmt.executeQuery("SELECT * FROM supplier_account WHERE Debt ='" + debt + "'");
+            rs.next();
+            String json = Database_Connection.getResultsToJSON(rs);
+            Gson gson = new Gson();
+            Supplier_account sa = gson.fromJson(json, Supplier_account.class);
+            return sa;
+        }catch (Exception e) {
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null; 
+    }
+    
     public void deleteFromDatabase(String username) throws SQLException, ClassNotFoundException{
         deleteUserAccountS(username);
         deleteSupplierAccount(username);
@@ -136,5 +174,41 @@ public class EditSupplierTable {
         Statement stmt = con.createStatement();
         String deleteQuery = "DELETE FROM user WHERE user_name='" + username + "'";
         stmt.executeUpdate(deleteQuery);
+    }
+    
+    public void updateProfit(double profit, double debt, int id){
+        try {
+            Connection con = Database_Connection.getConnection();
+            try (Statement stmt = con.createStatement()) {
+                String insertQuery = "UPDATE supplier_account SET Profit='" + profit + "', Debt='" + debt + "' WHERE user_id='" + id + "'";
+            
+                System.out.println(insertQuery);
+                stmt.executeUpdate(insertQuery);
+                System.out.println("# The supplier account was successfully updated.");
+            }
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void payDebt(double debt, int id){
+        try {
+            Connection con = Database_Connection.getConnection();
+            try (Statement stmt = con.createStatement()) {
+                String insertQuery = "UPDATE supplier_account SET Debt='" + debt + "' WHERE user_id='" + id + "'";
+            
+                System.out.println(insertQuery);
+                stmt.executeUpdate(insertQuery);
+                System.out.println("# The supplier account was successfully updated.");
+            }
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
