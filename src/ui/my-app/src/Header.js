@@ -46,6 +46,8 @@ const Header = () => {
               <Link to="/delete"><MenuItem>Terminate Account</MenuItem></Link>
               <Link to="/transaction"><MenuItem>Make a Transaction</MenuItem></Link>
               <Link to="/pay"><MenuItem>Pay your debt</MenuItem></Link>
+              <Link to="/ret"><MenuItem>Return a product</MenuItem></Link>
+              <Link to="/questionPrivate"><MenuItem>Date Question</MenuItem></Link>
               <MenuDivider />
                 
               </MenuList>

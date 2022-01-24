@@ -12,6 +12,7 @@ import database.tables.EditPrivatePurchaseTable;
 import database.tables.EditSupplierTable;
 import database.tables.EditTransactionsTable;
 import database.tables.EditUserAccountTable;
+import database.tables.NewDate;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -20,10 +21,12 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mainClasses.Company_Purchase;
 import mainClasses.Company_account;
+import mainClasses.Date;
 import mainClasses.JSON_Converter;
 import mainClasses.Private_Purchase;
 import mainClasses.Private_account;
@@ -34,7 +37,7 @@ import mainClasses.Transaction;
  *
  * @author admin
  */
-@WebServlet(name = "AccountServlet", urlPatterns = {"/InsertPrivateAccount", "/DeletePrivateAccount", "/DeleteCompanyAccount" ,"/DeleteSupplierAccount", "/InsertCompanyAccount", "/InsertSupplierAccount", "/PurchasePrivate", "/PurchaseCompany", "/PayAccount", "/PayCompany", "/PaySupplier"})
+@WebServlet(name = "AccountServlet", urlPatterns = {"/InsertPrivateAccount", "/DeletePrivateAccount", "/DeleteCompanyAccount" ,"/DeleteSupplierAccount", "/InsertCompanyAccount", "/InsertSupplierAccount", "/PurchasePrivate", "/PurchaseCompany", "/PayAccount", "/PayCompany", "/PaySupplier", "/ReturnPrivate", "/ReturnCompany", "/DateQuestion"})
 public class AccountServlet extends HttpServlet {
     
     
@@ -655,6 +658,235 @@ public class AccountServlet extends HttpServlet {
     
     }
 
+    private void returnPrivate(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+        JSON_Converter jc = new JSON_Converter();
+        String s = jc.getJsonFromAjax(request.getReader());
+        int f_quantity;
+        double f_balance;
+        double f_pay;
+        double f_debt;
+        double f_debt_S;
+        Supplier_account sa, tp;
+        Private_Purchase p,tmp, a;
+        Private_account pa, temp;
+        EditUserAccountTable euat = new EditUserAccountTable();
+        EditPrivatePurchaseTable eppt = new EditPrivatePurchaseTable();
+        EditSupplierTable est = new EditSupplierTable();
+        Gson gson = new Gson();
+        JsonObject jo = new JsonObject();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
+        tmp = eppt.jsonToPrivatePurchase(s);
+        try {
+            p = eppt.databaseToPrivatePurchaseP(tmp.getAccountName(), tmp.getProduct(), tmp.getSellerName());
+            if(p != null){
+                if(p.getQuantity() > 0){
+                    f_quantity = p.getQuantity() - tmp.getQuantity();
+                    eppt.updateQuantity(f_quantity, p.getAccountName(), p.getSellerName(), p.getProduct());
+                    f_pay = p.getTotalPrice() * tmp.getQuantity();
+                    pa = euat.databaseToPrivateAccountU(p.getAccountName());
+                    if(pa != null){
+                        f_balance = pa.getCredit_balance() + f_pay;
+                        f_debt = pa.getDebt() - f_pay;
+                        if(f_debt < 0){
+                            f_debt = 0.0;
+                        }
+                        sa = est.databaseToSupplierAccountU(p.getSellerName());
+                        if(sa != null){
+                            f_debt_S = sa.getDebt() + f_pay;
+                        
+                            euat.updateBalance(f_balance, f_debt, pa.getUserID());
+                            
+                            est.updateProfit(sa.getProfit(), f_debt_S, sa.getUserID());
+                        
+                            a = eppt.databaseToPrivatePurchase(p.getAccountName());
+                            if(a.getQuantity() == f_quantity){
+                                temp = euat.databaseToPrivateAccountU(pa.getUserName());
+                                if(temp.getCredit_balance() == f_balance){
+                                    tp = est.databaseToSupplierAccountD(f_debt_S);
+                                    if(tp != null){
+                                        jo.addProperty("Result", "success!");
+                                        response.setStatus(200);
+                                        response.getWriter().write(jo.toString());
+                                    }
+                                    else{
+                                        jo.addProperty("Result", "Failed!");
+                                        response.setStatus(404);
+                                        response.getWriter().write(jo.toString());
+                                    }
+                                }
+                                else{
+                                    jo.addProperty("Result", "Failed!");
+                                    response.setStatus(404);
+                                    response.getWriter().write(jo.toString());
+                                } 
+                            }
+                        }
+                        else{
+                            jo.addProperty("Result", "Failed!");
+                            response.setStatus(404);
+                            response.getWriter().write(jo.toString());
+                        }
+                    }
+                    else{
+                        jo.addProperty("Result", "Failed!");
+                        response.setStatus(404);
+                        response.getWriter().write(jo.toString());
+                    }
+                }
+                else{
+                    jo.addProperty("Result", "Failed!");
+                    response.setStatus(403);
+                    response.getWriter().write(jo.toString());
+                }
+                
+            }
+            else{
+                jo.addProperty("Result", "Failed!");
+                response.setStatus(404);
+                response.getWriter().write(jo.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void returnCompany(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+        JSON_Converter jc = new JSON_Converter();
+        String s = jc.getJsonFromAjax(request.getReader());
+        int f_quantity;
+        double f_balance;
+        double f_pay;
+        double f_debt;
+        double f_debt_S;
+        Supplier_account sa, tp;
+        Company_Purchase p,tmp, a;
+        Company_account pa, temp;
+        EditCompanyAccountTable ecat = new EditCompanyAccountTable();
+        EditCompanyPurchaseTable ecpt = new EditCompanyPurchaseTable();
+        EditSupplierTable est = new EditSupplierTable();
+        Gson gson = new Gson();
+        JsonObject jo = new JsonObject();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        
+        tmp = ecpt.jsonToCompanyPurchase(s);
+        try {
+            p = ecpt.databaseToPrivatePurchaseP(tmp.getAccountName(), tmp.getProduct(), tmp.getSellerName());
+            if(p != null){
+                if(p.getQuantity() > 0){
+                    f_quantity = p.getQuantity() - tmp.getQuantity();
+                    ecpt.updateQuantity(f_quantity, p.getAccountName(), p.getSellerName(), p.getProduct());
+                    f_pay = p.getTotalPrice() * tmp.getQuantity();
+                    pa = ecat.databaseToCompanyAccountU(p.getAccountName());
+                    if(pa != null){
+                        f_balance = pa.getCredit_balance() + f_pay;
+                        f_debt = pa.getDebt() - f_pay;
+                        if(f_debt < 0){
+                            f_debt = 0.0;
+                        }
+                        sa = est.databaseToSupplierAccountU(p.getSellerName());
+                        if(sa != null){
+                            f_debt_S = sa.getDebt() + f_pay;
+                        
+                            ecat.updateBalance(f_balance, f_debt, pa.getUserID());
+                            
+                            est.updateProfit(sa.getProfit(), f_debt_S, sa.getUserID());
+                        
+                            a = ecpt.databaseToPrivatePurchase(p.getAccountName());
+                            if(a.getQuantity() == f_quantity){
+                                temp = ecat.databaseToCompanyAccountU(pa.getUserName());
+                                if(temp.getCredit_balance() == f_balance){
+                                    tp = est.databaseToSupplierAccountD(f_debt_S);
+                                    if(tp != null){
+                                        jo.addProperty("Result", "success!");
+                                        response.setStatus(200);
+                                        response.getWriter().write(jo.toString());
+                                    }
+                                    else{
+                                        jo.addProperty("Result", "Failed!");
+                                        response.setStatus(404);
+                                        response.getWriter().write(jo.toString());
+                                    }
+                                }
+                                else{
+                                    jo.addProperty("Result", "Failed!");
+                                    response.setStatus(404);
+                                    response.getWriter().write(jo.toString());
+                                } 
+                            }
+                        }
+                        else{
+                            jo.addProperty("Result", "Failed!");
+                            response.setStatus(404);
+                            response.getWriter().write(jo.toString());
+                        }
+                    }
+                    else{
+                        jo.addProperty("Result", "Failed!");
+                        response.setStatus(404);
+                        response.getWriter().write(jo.toString());
+                    }
+                }
+                else{
+                    jo.addProperty("Result", "Failed!");
+                    response.setStatus(403);
+                    response.getWriter().write(jo.toString());
+                }
+                
+            }
+            else{
+                jo.addProperty("Result", "Failed!");
+                response.setStatus(404);
+                response.getWriter().write(jo.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    private void dateQuestion(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+        JSON_Converter jc = new JSON_Converter();
+        String s = jc.getJsonFromAjax(request.getReader());
+        NewDate date = new NewDate();
+        Date d;
+        ArrayList<Transaction> t = new ArrayList<Transaction>();
+        EditTransactionsTable ett = new EditTransactionsTable();
+        System.out.println(s);
+        d = date.jsonToDate(s);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try(PrintWriter out = response.getWriter()){
+            t = ett.databaseToTransactionDate(d.getDate1(), d.getDate2());
+            Gson gson = new Gson();
+            JsonObject jo = new JsonObject();
+            if(t != null){
+                String json = new Gson().toJson(t);
+                System.out.println("JSON = " + json);
+                response.setStatus(200);
+                out.println(json);
+            }
+            else{
+                jo.addProperty("Result", "Failed!");
+                response.setStatus(404);
+                response.getWriter().write(jo.toString());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -743,6 +975,15 @@ public class AccountServlet extends HttpServlet {
                 break;
             case "/PaySupplier":
                 paySupplier(request, response);
+                break;
+            case "/ReturnPrivate":
+                returnPrivate(request, response);
+                break;
+            case "/ReturnCompany":
+                returnCompany(request, response);
+                break;
+            case "/DateQuestion":
+                dateQuestion(request, response);
                 break;
             default:
                 System.out.println("Something Went WRONG. IN DEFAULT.");

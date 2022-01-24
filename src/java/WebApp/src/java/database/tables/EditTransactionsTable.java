@@ -113,5 +113,37 @@ public class EditTransactionsTable {
         return null; 
     }
     
+    public ArrayList<Transaction> databaseToTransactionDate(String date1, String date2) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Transaction> t = new ArrayList<Transaction>();
+      
+        ResultSet rs;
+        int j = 0;
+        int o = 0;
+        String bf = date1 + " 00:00:00";
+        String af = date2 + " 23:59:59";
+        
+        System.out.println(bf + " --- " + af);
+        
+        
+        try{
+            rs = stmt.executeQuery("SELECT * FROM transactions WHERE t_date BETWEEN '" + bf + "' AND '" + af + "'");
+            while(rs.next()){
+                String json = Database_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Transaction rdz = gson.fromJson(json, Transaction.class);
+                t.add(rdz);
+            }
+            
+            return t;
+        }
+        catch(Exception e){
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+    
     
 }

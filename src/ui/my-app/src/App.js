@@ -13,6 +13,8 @@ import Header from './Header';
 import DeleteRows from './delete/DeleteRows';
 import Transaction from './transaction/Transaction';
 import Pay from './pay/Pay';
+import Return from './ret/Return';
+import PrivateQuestion from './questionPrivate/PrivateQuestion';
 
 
 function App() {
@@ -28,6 +30,8 @@ function App() {
               <Route path="/delete" element={<DeleteRows />}/>
               <Route path="/transaction" element={<Transaction />}/>
               <Route path="/pay" element={<Pay />}/>
+              <Route path="/ret" element={<Return />}/>
+              <Route path="/questionPrivate" element={<PrivateQuestion />}/>
             </Routes>
           </VStack>
         </Box>
