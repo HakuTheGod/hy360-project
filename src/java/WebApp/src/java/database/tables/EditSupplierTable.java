@@ -8,9 +8,11 @@ import database.Database_Connection;
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mainClasses.Company_account;
+import mainClasses.Private_account;
 import mainClasses.Supplier_account;
 
 /**
@@ -211,4 +213,54 @@ public class EditSupplierTable {
             Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public ArrayList<Supplier_account> databaseToSupplierAll() throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Supplier_account> s = new ArrayList<Supplier_account>();
+      
+        ResultSet rs;
+        
+        
+        try{
+            rs = stmt.executeQuery("SELECT * FROM supplier_account");
+            while(rs.next()){
+                String json = Database_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Supplier_account rdz = gson.fromJson(json, Supplier_account.class);
+                s.add(rdz);
+            }
+            String sap = new Gson().toJson(s);
+            System.out.println("LIST: " + sap);
+            
+            return s;
+        }
+        catch(Exception e){
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+    
+    public int updateDebt(double debt, String user_name){
+        try {
+            Connection con = Database_Connection.getConnection();
+            try (Statement stmt = con.createStatement()) {
+                String insertQuery = "UPDATE supplier_account SET Debt='" + debt + "' WHERE user_name='" + user_name + "'";
+            
+                System.out.println(insertQuery);
+                stmt.executeUpdate(insertQuery);
+                System.out.println("# The supplier account was successfully updated.");
+                return 1;
+            }
+        
+        } catch (SQLException ex) {
+            Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+    
+    
 }

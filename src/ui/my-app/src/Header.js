@@ -48,6 +48,9 @@ const Header = () => {
               <Link to="/pay"><MenuItem>Pay your debt</MenuItem></Link>
               <Link to="/ret"><MenuItem>Return a product</MenuItem></Link>
               <Link to="/questionPrivate"><MenuItem>Date Question</MenuItem></Link>
+              <Link to="/goodBoys"><MenuItem>Good Boys</MenuItem></Link>
+              <Link to="/badBoys"><MenuItem>Bad Boys</MenuItem></Link>
+              <Link to="/spongeBob"><MenuItem>SpongeBob</MenuItem></Link>
               <MenuDivider />
                 
               </MenuList>

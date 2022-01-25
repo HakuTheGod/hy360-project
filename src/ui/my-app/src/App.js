@@ -15,6 +15,9 @@ import Transaction from './transaction/Transaction';
 import Pay from './pay/Pay';
 import Return from './ret/Return';
 import PrivateQuestion from './questionPrivate/PrivateQuestion';
+import GoodBoys from './goodBoys/GoodBoys';
+import BadBoys from './badBoys/BadBoys';
+import SpongeBob from './spongeBob/SpongeBob';
 
 
 function App() {
@@ -32,6 +35,9 @@ function App() {
               <Route path="/pay" element={<Pay />}/>
               <Route path="/ret" element={<Return />}/>
               <Route path="/questionPrivate" element={<PrivateQuestion />}/>
+              <Route path="/goodBoys" element={<GoodBoys />}/>
+              <Route path="/badBoys" element={<BadBoys />}/>
+              <Route path="/spongeBob" element={<SpongeBob />}/>
             </Routes>
           </VStack>
         </Box>

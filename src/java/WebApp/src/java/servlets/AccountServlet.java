@@ -6,6 +6,7 @@ package servlets;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import database.tables.DateTime;
 import database.tables.EditCompanyAccountTable;
 import database.tables.EditCompanyPurchaseTable;
 import database.tables.EditPrivatePurchaseTable;
@@ -21,15 +22,20 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mainClasses.Company_Purchase;
 import mainClasses.Company_account;
 import mainClasses.Date;
+import mainClasses.GoodBoys;
 import mainClasses.JSON_Converter;
 import mainClasses.Private_Purchase;
 import mainClasses.Private_account;
+import mainClasses.Squidward;
 import mainClasses.Supplier_account;
 import mainClasses.Transaction;
 
@@ -37,7 +43,7 @@ import mainClasses.Transaction;
  *
  * @author admin
  */
-@WebServlet(name = "AccountServlet", urlPatterns = {"/InsertPrivateAccount", "/DeletePrivateAccount", "/DeleteCompanyAccount" ,"/DeleteSupplierAccount", "/InsertCompanyAccount", "/InsertSupplierAccount", "/PurchasePrivate", "/PurchaseCompany", "/PayAccount", "/PayCompany", "/PaySupplier", "/ReturnPrivate", "/ReturnCompany", "/DateQuestion"})
+@WebServlet(name = "AccountServlet", urlPatterns = {"/InsertPrivateAccount", "/DeletePrivateAccount", "/DeleteCompanyAccount" ,"/DeleteSupplierAccount", "/InsertCompanyAccount", "/InsertSupplierAccount", "/PurchasePrivate", "/PurchaseCompany", "/PayAccount", "/PayCompany", "/PaySupplier", "/ReturnPrivate", "/ReturnCompany", "/DateQuestion", "/GoodBoys", "/BadBoys", "/SpongeBob"})
 public class AccountServlet extends HttpServlet {
     
     
@@ -887,6 +893,278 @@ public class AccountServlet extends HttpServlet {
     
     }
     
+     private void goodBoys(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        int i;
+        ArrayList<GoodBoys> g = new ArrayList<GoodBoys>();
+        ArrayList<Private_account> p = new ArrayList<Private_account>();
+        ArrayList<Company_account> c = new ArrayList<Company_account>();
+        ArrayList<Supplier_account> s = new ArrayList<Supplier_account>();
+        EditUserAccountTable euat = new EditUserAccountTable();
+        EditCompanyAccountTable ecat = new EditCompanyAccountTable();
+        EditSupplierTable est = new EditSupplierTable();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try(PrintWriter out = response.getWriter()){
+            p = euat.databaseToPrivateAll();
+            Gson gson = new Gson();
+            JsonObject jo = new JsonObject();
+            if(p != null){
+                for(i = 0; i < p.size(); i++){
+                    if(p.get(i).getDebt() == 0.0){
+                        GoodBoys gb = new GoodBoys();
+                        gb.setUserID(p.get(i).getUserID());
+                        gb.setUserName(p.get(i).getUserName());
+                        g.add(gb);
+                    }
+                }
+                c = ecat.databaseToCompanyAll();
+                if(c != null){
+                    
+                   for(i = 0; i < c.size(); i++){
+                       if(c.get(i).getDebt() == 0.0){
+                            GoodBoys gb = new GoodBoys();
+                            gb.setUserID(c.get(i).getUserID());
+                            gb.setUserName(c.get(i).getUserName());
+                            g.add(gb);
+                       }
+                    } 
+                   s = est.databaseToSupplierAll();
+                   if(s != null){
+                       for(i = 0; i < s.size(); i++){
+                           System.out.println(s.get(i).getUserName() + ", " + s.get(i).getDebt());
+                        if(s.get(i).getDebt() == 0.0){
+                            GoodBoys gb = new GoodBoys();
+                            gb.setUserID(s.get(i).getUserID());
+                            gb.setUserName(s.get(i).getUserName());
+                            g.add(gb);
+                        }
+                    } 
+                       
+                       Collections.sort(g, new Comparator<GoodBoys>() {
+                            @Override
+                            public int compare(GoodBoys item, GoodBoys t1) {
+                                String s1 = item.getUserName();
+                                String s2 = t1.getUserName();
+                                return s1.compareToIgnoreCase(s2);
+                            }
+
+                        });
+                       
+                        String json = new Gson().toJson(g);
+                        System.out.println("JSON = " + json);
+                        response.setStatus(200);
+                        out.println(json);
+                       
+                   }
+                   else{
+                       response.setStatus(404);
+                   }
+                }
+                else{
+                    response.setStatus(404);
+                }
+            }
+            else{
+                response.setStatus(404);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    }
+     
+     private void badBoys(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        int i;
+        ArrayList<GoodBoys> g = new ArrayList<GoodBoys>();
+        ArrayList<Private_account> p = new ArrayList<Private_account>();
+        ArrayList<Company_account> c = new ArrayList<Company_account>();
+        ArrayList<Supplier_account> s = new ArrayList<Supplier_account>();
+        EditUserAccountTable euat = new EditUserAccountTable();
+        EditCompanyAccountTable ecat = new EditCompanyAccountTable();
+        EditSupplierTable est = new EditSupplierTable();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        try(PrintWriter out = response.getWriter()){
+            p = euat.databaseToPrivateAll();
+            Gson gson = new Gson();
+            JsonObject jo = new JsonObject();
+            if(p != null){
+                for(i = 0; i < p.size(); i++){
+                    if(p.get(i).getDebt() > 0.0){
+                        GoodBoys gb = new GoodBoys();
+                        gb.setUserID(p.get(i).getUserID());
+                        gb.setUserName(p.get(i).getUserName());
+                        g.add(gb);
+                    }
+                }
+                c = ecat.databaseToCompanyAll();
+                if(c != null){
+                    
+                   for(i = 0; i < c.size(); i++){
+                       if(c.get(i).getDebt() > 0.0){
+                            GoodBoys gb = new GoodBoys();
+                            gb.setUserID(c.get(i).getUserID());
+                            gb.setUserName(c.get(i).getUserName());
+                            g.add(gb);
+                       }
+                    } 
+                   s = est.databaseToSupplierAll();
+                   if(s != null){
+                       for(i = 0; i < s.size(); i++){
+                           System.out.println(s.get(i).getUserName() + ", " + s.get(i).getDebt());
+                        if(s.get(i).getDebt() > 0.0){
+                            GoodBoys gb = new GoodBoys();
+                            gb.setUserID(s.get(i).getUserID());
+                            gb.setUserName(s.get(i).getUserName());
+                            g.add(gb);
+                        }
+                    } 
+                       
+                       Collections.sort(g, new Comparator<GoodBoys>() {
+                            @Override
+                            public int compare(GoodBoys item, GoodBoys t1) {
+                                String s1 = item.getUserName();
+                                String s2 = t1.getUserName();
+                                return s1.compareToIgnoreCase(s2);
+                            }
+
+                        });
+                       
+                        String json = new Gson().toJson(g);
+                        System.out.println("JSON = " + json);
+                        response.setStatus(200);
+                        out.println(json);
+                       
+                   }
+                   else{
+                       response.setStatus(404);
+                   }
+                }
+                else{
+                    response.setStatus(404);
+                }
+            }
+            else{
+                response.setStatus(404);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    }
+     
+     private void spongeBob(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        
+         int month;
+         double f_debt;
+         double total_sale = 0.0;
+         int i = 0;
+         double compare_sale = 0.0;
+         String name, totalName;
+         DateTime date = new DateTime();
+         Squidward squidward = new Squidward();
+         ArrayList<Transaction> t = new ArrayList<Transaction>();
+         ArrayList<Squidward> squid = new ArrayList<Squidward>();
+         Supplier_account s;
+         EditSupplierTable est = new EditSupplierTable();
+         EditTransactionsTable ett = new EditTransactionsTable();
+         
+         
+        try(PrintWriter out = response.getWriter()){
+            month = date.getMonthNumber();
+            if(month == 1){
+                month = 12;
+            }
+            else{
+                month = month - 1;
+            }
+            String d = date.monthToFullDateFirst(month);
+            String l = date.monthToFullDateLast(month);
+            
+            System.out.println("START OF LAST MONTH: " + d);
+            System.out.println("END OF LAST MONTH: " + l);
+            
+            t = ett.databaseToTransactionMonth(d, l);
+            if(t != null){
+                name = t.get(0).getSeller();
+                totalName = name;
+                while(t.get(i).getSeller().equals(name)){
+                    total_sale = total_sale + t.get(i).getAmount();
+                    i++;
+                }
+                i = 0;
+                while(i < t.size()){
+                    if(t.get(i).getSeller().equals(name)){
+                        compare_sale = compare_sale + t.get(i).getAmount();
+                        System.out.println(name);
+                        System.out.println(compare_sale);
+                    }
+                    else{
+                        if(compare_sale > total_sale){
+                       
+                            total_sale = compare_sale;
+                            totalName = t.get(i-1).getSeller();
+                        }
+                        else{
+                            compare_sale = 0.0;
+                            compare_sale = compare_sale + t.get(i).getAmount();
+                            name = t.get(i).getSeller();
+                            System.out.println(name);
+                            System.out.println(compare_sale);
+                            System.out.println(total_sale);
+                        }
+                    }
+                    i++;
+                }
+                if(compare_sale > total_sale){
+                       
+                            total_sale = compare_sale;
+                            totalName = t.get(i-1).getSeller();
+                }
+                System.out.println("NAME: " + totalName + ", SALES: " + total_sale);
+                s = est.databaseToSupplierAccountU(totalName);
+                if(s != null){
+                    squidward.setUserName(totalName);
+                    squidward.setTotalSales(total_sale);
+                    squid.add(squidward);
+                    f_debt = s.getDebt() * 0.95;
+                    int f = est.updateDebt(f_debt, s.getUserName());
+                    if(f == 1){
+                        Gson gson = new Gson();
+                        JsonObject jo = new JsonObject();
+                        response.setStatus(200);
+                        jo.addProperty("user_name", squidward.getUserName());
+                        jo.addProperty("total_sales", squidward.getUserID());
+                        response.setStatus(200);
+                        response.getWriter().write(jo.toString());
+                    }
+                    else{
+                        response.setStatus(404);
+                    }
+                }
+                else{
+                    response.setStatus(404);
+                }
+            }
+            else{
+                response.setStatus(404);
+            }   
+        } catch (ParseException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(AccountServlet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+         
+         
+    
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -925,7 +1203,22 @@ public class AccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+        String action = request.getServletPath();
+        System.out.println(action);
+        switch(action){
+            case "/GoodBoys":
+                goodBoys(request, response);
+                break;
+            case "/BadBoys":
+                badBoys(request,response);
+                break;
+            case "/SpongeBob":
+                spongeBob(request,response);
+                break;
+            default:
+                System.out.println("Something Went WRONG. IN DEFAULT.");
+                break;
+        }
     }
 
     /**

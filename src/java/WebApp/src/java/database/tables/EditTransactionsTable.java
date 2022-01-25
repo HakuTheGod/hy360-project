@@ -14,6 +14,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import mainClasses.GoodBoys;
 import mainClasses.Private_account;
 import mainClasses.Transaction;
 
@@ -145,5 +147,46 @@ public class EditTransactionsTable {
         return null;
     }
     
+    
+    public ArrayList<Transaction> databaseToTransactionMonth(String date1, String date2) throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Transaction> t = new ArrayList<Transaction>();
+        System.out.println("IN DB TO MONTH");
+        String bf = date1 + " 00:00:00";
+        String af = date2 + " 23:59:59";
+        System.out.println("BF: " + bf);
+        System.out.println("AF: " + af);
+      
+        ResultSet rs;
+        
+        
+        try{
+            rs = stmt.executeQuery("SELECT * FROM transactions WHERE t_date BETWEEN '" + bf + "' AND '" + af + "' AND t_type ='charge'");
+            while(rs.next()){
+                String json = Database_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Transaction rdz = gson.fromJson(json, Transaction.class);
+                t.add(rdz);
+            }
+            
+            String sap = new Gson().toJson(t);
+            System.out.println("LIST: " + sap);
+            
+            Collections.sort(t, new Comparator<Transaction>() {
+                            @Override
+                            public int compare(Transaction item, Transaction t1) {
+                                String s1 = item.getSeller();
+                                String s2 = t1.getSeller();
+                                return s1.compareToIgnoreCase(s2);
+                            }
+            });
+            return t;
+        }catch(Exception e){
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
     
 }

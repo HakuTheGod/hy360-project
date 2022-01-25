@@ -245,7 +245,7 @@ INSERT INTO User VALUES(
 
 INSERT INTO Supplier_account VALUES(
 	"10",
-	"Filthy Frank",
+	"Filthy_Frank",
 	"celebrities_butt_hair",
 	"333333",
 	"0.1",

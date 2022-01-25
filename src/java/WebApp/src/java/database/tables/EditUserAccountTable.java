@@ -5,9 +5,11 @@ import database.Database_Connection;
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mainClasses.Private_account;
+import mainClasses.Transaction;
 
 
 public class EditUserAccountTable{
@@ -187,4 +189,32 @@ public class EditUserAccountTable{
             Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+    public ArrayList<Private_account> databaseToPrivateAll() throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Private_account> p = new ArrayList<Private_account>();
+      
+        ResultSet rs;
+        
+        
+        try{
+            rs = stmt.executeQuery("SELECT * FROM private_account");
+            while(rs.next()){
+                String json = Database_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Private_account rdz = gson.fromJson(json, Private_account.class);
+                p.add(rdz);
+            }
+            
+            return p;
+        }
+        catch(Exception e){
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
+    }
+    
+    
 }

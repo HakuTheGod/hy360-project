@@ -10,6 +10,7 @@ import database.Database_Connection;
 import java.sql.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mainClasses.Company_account;
@@ -191,5 +192,31 @@ public class EditCompanyAccountTable {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(EditUserAccountTable.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public ArrayList<Company_account> databaseToCompanyAll() throws SQLException, ClassNotFoundException{
+        Connection con = Database_Connection.getConnection();
+        Statement stmt = con.createStatement();
+        ArrayList<Company_account> c = new ArrayList<Company_account>();
+      
+        ResultSet rs;
+        
+        
+        try{
+            rs = stmt.executeQuery("SELECT * FROM company_account");
+            while(rs.next()){
+                String json = Database_Connection.getResultsToJSON(rs);
+                Gson gson = new Gson();
+                Company_account rdz = gson.fromJson(json, Company_account.class);
+                c.add(rdz);
+            }
+            
+            return c;
+        }
+        catch(Exception e){
+            System.err.println("Got an exception! ");
+            System.err.println(e.getMessage());
+        }
+        return null;
     }
 }

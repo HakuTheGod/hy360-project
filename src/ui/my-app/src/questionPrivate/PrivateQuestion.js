@@ -118,7 +118,7 @@ const PrivateQuestion = () => {
         {show && <div>
         <form method='POST' onSubmit={handleSubmit} noValidate>
             <Stack maxWidth={1000} margin='auto' spacing={7} margin-top={5}>
-                <Text fontSize='5xl' >Transaction</Text>
+                <Text fontSize='5xl' >DATE QUESTION</Text>
                 <FormControl isRequired id='date1'>
                 <FormLabel>Date1</FormLabel>
                             <Input
